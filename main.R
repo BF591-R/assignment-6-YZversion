@@ -89,9 +89,9 @@ run_deseq <- function(count_dataframe, coldata, count_filter, condition_name) {
 #' @examples run_edger(counts_df, group)
 run_edger <- function(count_dataframe, group) {
     y <- DGEList(counts=count_dataframe, group=group)
-    y <- calcNormFactors(y)
     keep <- filterByExpr(y, group=group)
     y <- y[keep, , keep.lib.sizes=FALSE]
+    y <- calcNormFactors(y)
     y <- estimateDisp(y)
     et <- exactTest(y)
     return(as.data.frame(et$table))
@@ -119,9 +119,9 @@ run_edger <- function(count_dataframe, group) {
 #' @examples run_limma(counts_df, design, voom=TRUE)
 run_limma <- function(counts_dataframe, design, group) {
     y <- DGEList(counts=counts_dataframe, group=group)
-    y <- calcNormFactors(y)
-    keep <- filterByExpr(y, design=as.matrix(design))
+    keep <- filterByExpr(y, group=group)
     y <- y[keep, , keep.lib.sizes=FALSE]
+    y <- calcNormFactors(y)
     v <- voom(y, as.matrix(design))
     fit <- lmFit(v, as.matrix(design))
     fit <- eBayes(fit)
